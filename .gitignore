@@ -16,3 +16,9 @@
 *.exe
 *.out
 *.app
+
+build-*
+sip_ua
+udp_server
+tcp_server
+
