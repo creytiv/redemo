@@ -8,8 +8,8 @@
  *  $ ./sip_ua
  *
  *
- *  To test otbound calls, invoke with a SIP URI argument.
- *  sip_will will invite provided URI:
+ *  To test outbound calls, invoke with a SIP URI argument.
+ *  sip_ua will invite provided URI:
  *
  *  $ ./sip_ua sip:echo@creytiv.com
  *
@@ -269,7 +269,7 @@ static void exit_handler(void *arg)
 }
 
 
-/* called upon reception of  SIGINT, SIGALRM or SIGTERM */
+/* called upon reception of SIGINT, SIGALRM or SIGTERM */
 static void signal_handler(int sig)
 {
 	re_printf("terminating on signal %d...\n", sig);
@@ -436,7 +436,7 @@ int main(int argc, char *argv[])
 	mem_deref(sip);
 	mem_deref(dnsc);
 
-	/* free librar state */
+	/* free libre state */
 	libre_close();
 
 	/* check for memory leaks */
