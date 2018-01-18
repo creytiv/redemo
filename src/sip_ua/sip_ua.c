@@ -413,7 +413,8 @@ int main(int argc, char *argv[])
 	}
 	else {
 
-		err = sipreg_register(&reg, sip, registrar, uri, uri, 60, name,
+		err = sipreg_register(&reg, sip, registrar, uri,
+				      NULL, uri, 60, name,
 				      NULL, 0, 0, auth_handler, NULL, false,
 				      register_handler, NULL, NULL, NULL);
 		if (err) {
