@@ -136,7 +136,7 @@ int main(void)
 
 	(void)sa_set_str(&laddr, "0.0.0.0", 3456);
 
-	/* Create listening UDP socket, IP address 0.0.0.0, TCP port 3456 */
+	/* Create listening TCP socket, IP address 0.0.0.0, TCP port 3456 */
 	err = tcp_listen(&ts, &laddr, connect_handler, NULL);
 	if (err) {
 		re_fprintf(stderr, "tcp listen error: %s\n", strerror(err));
