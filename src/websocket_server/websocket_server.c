@@ -35,6 +35,7 @@ static void signal_handler(int sig)
 	websock_shutdown(server);
 }
 
+
 static void websock_shutdown_handler(void *arg)
 {
 	(void)arg;
@@ -43,6 +44,7 @@ static void websock_shutdown_handler(void *arg)
 	/* stop libre main loop */
 	re_cancel();
 }
+
 
 /* destructor called when reference count on conn reach zero */
 static void destructor(void *arg)
@@ -55,6 +57,7 @@ static void destructor(void *arg)
 	/* clean up local Websocket connection state */
 	mem_deref(ws->conn);
 }
+
 
 /* called when a message is received from the other side */
 static void srv_websock_recv_handler(const struct websock_hdr *hdr,
@@ -69,14 +72,16 @@ static void srv_websock_recv_handler(const struct websock_hdr *hdr,
 		re_fprintf(stderr, "ws send error: %m\n", err);
 }
 
+
 /* called when the websocket is closed by the other side */
 static void srv_websock_close_handler(int err, void *arg)
 {
 	struct websocket *ws = arg;
 
-	re_fprintf(stderr, "ws close %m\n", err);
+	re_printf("ws close %m\n", err);
 	mem_deref(ws);
 }
+
 
 /* HTTP request handler */
 static void http_req_handler(struct http_conn *conn,
@@ -90,14 +95,14 @@ static void http_req_handler(struct http_conn *conn,
 	if (!ws) {
 		err = ENOMEM;
 		re_fprintf(stderr, "http req handler alloc error: %m\n", err);
-		return;
+		goto out;
 	}
 
 	err = websock_accept(&ws->conn, server, conn, msg,
 				 0, srv_websock_recv_handler,
 				 srv_websock_close_handler, ws);
 	if (err) {
-		re_fprintf(stderr, "websocket accept error: %mßn", err);
+		re_fprintf(stderr, "websocket accept error: %m\n", err);
 		goto out;
 	}
 
@@ -105,10 +110,12 @@ static void http_req_handler(struct http_conn *conn,
 	list_append(&connl, &ws->le, ws);
  out:
 	if (err) {
+		http_reply(conn, 500, "Server Error", NULL);
 		/* destroy state */
 		mem_deref(ws);
 	}
 }
+
 
 int main(void)
 {
