@@ -10,6 +10,7 @@ VERSION   := 0.5.0
 DEMOS	  += sip_ua
 DEMOS	  += tcp_server
 DEMOS	  += udp_server
+DEMOS	  += websocket_server
 
 
 LIBRE_MK  := $(shell [ -f ../re/mk/re.mk ] && \
