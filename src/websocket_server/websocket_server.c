@@ -1,7 +1,8 @@
 /**
  * @file websocket_server.c  Websocket Server Demo
  *
- * The demo can for instance be tested with the telnet tool:
+ * The demo can for instance be tested by pasting this into
+ * a web browser javascript console:
  *	var ws = new WebSocket('ws://localhost:3456');
  *	ws.addEventListener('open', () => ws.send('hello'));
  *	ws.addEventListener('close', (e) => console.log('close', e));
@@ -10,7 +11,6 @@
  * Copyright (C) 2018 Creytiv.com
  */
 
-#include <string.h>
 #include <re.h>
 
 
@@ -66,7 +66,7 @@ static void srv_websock_recv_handler(const struct websock_hdr *hdr,
 	err = websock_send(ws->conn, hdr->opcode, "%b",
 		mbuf_buf(mb), mbuf_get_left(mb));
 	if (err)
-		re_printf("ws send error: %m\n", err);
+		re_fprintf(stderr, "ws send error: %m\n", err);
 }
 
 /* called when the websocket is closed by the other side */
@@ -74,7 +74,7 @@ static void srv_websock_close_handler(int err, void *arg)
 {
 	struct websocket *ws = arg;
 
-	re_printf("ws close\n");
+	re_fprintf(stderr, "ws close %m\n", err);
 	mem_deref(ws);
 }
 
@@ -87,20 +87,24 @@ static void http_req_handler(struct http_conn *conn,
 
 	/* allocate connection state */
 	ws = mem_zalloc(sizeof(*ws), destructor);
-	if (!conn) {
+	if (!ws) {
 		err = ENOMEM;
-		goto out;
+		re_fprintf(stderr, "http req handler alloc error: %m\n", err);
+		return;
 	}
+
 	err = websock_accept(&ws->conn, server, conn, msg,
 				 0, srv_websock_recv_handler,
 				 srv_websock_close_handler, ws);
+	if (err) {
+		re_fprintf(stderr, "websocket accept error: %mßn", err);
+		goto out;
+	}
 
 	/* append connection to connection list */
 	list_append(&connl, &ws->le, ws);
  out:
 	if (err) {
-		re_printf("http req error: %m\n", err);
-
 		/* destroy state */
 		mem_deref(ws);
 	}
@@ -130,6 +134,7 @@ int main(void)
 		re_fprintf(stderr, "http listen error: %m\n", err);
 		goto out;
 	}
+
 	err = websock_alloc(&server, websock_shutdown_handler, NULL);
 	if (err) {
 		re_fprintf(stderr, "websocket alloc error: %m\n", err);
@@ -145,7 +150,7 @@ int main(void)
 	/* free HTTP socket */
 	httpsock = mem_deref(httpsock);
 
-	/* free Websocket Server */
+	/* free Websocket server */
 	server = mem_deref(server);
 
 	/* free library state */
