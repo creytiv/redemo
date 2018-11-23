@@ -5,7 +5,7 @@
 #
 
 PROJECT   := redemo
-VERSION   := 0.5.0
+VERSION   := 0.6.0
 
 DEMOS	  += sip_ua
 DEMOS	  += tcp_server
