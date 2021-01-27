@@ -1,25 +1,23 @@
 # Object files
-*.o
-*.ko
+/*.o
+/*.ko
 
 # Libraries
-*.lib
-*.a
+/*.lib
+/*.a
 
 # Shared objects (inc. Windows DLLs)
-*.dll
-*.so
-*.so.*
-*.dylib
+/*.dll
+/*.so
+/*.so.*
+/*.dylib
 
 # Executables
-*.exe
-*.out
-*.app
-
-build-*
-sip_ua
-udp_server
-tcp_server
-websocket_server
-
+/*.exe
+/*.out
+/*.app
+/build-*
+/sip_ua
+/udp_server
+/tcp_server
+/websocket_server
